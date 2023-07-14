@@ -7,10 +7,12 @@ import { nextTick, onMounted, ref } from 'vue';
 defineProps({
     user_id: Number,
     messages: Array,
+    room_info: Object
 });
 
 const form = useForm({
-    send_message: ""
+    send_message: "",
+    room_id: null
 });
 const formTextArea = ref();
 const toButtonHeight = ref(0);
@@ -26,6 +28,7 @@ onMounted(() => {
     window.addEventListener("scroll", showToButton);
 });
 
+// リスナー（Pusher）
 window.Echo.channel('chat').listen('MessageControl', function(data) {
     router.visit(route('chat'), {
         preserveState: true,
@@ -33,19 +36,26 @@ window.Echo.channel('chat').listen('MessageControl', function(data) {
     });
 });
 
+// スクロールボタン制御
 const showToButton = () => {
     toButtonShow.value = preventScroll.value !== window.scrollY;
 }
 
+// 一番下までスクロールする
 const scrollEnd = () => {
     document.getElementById('chatScroll').scrollIntoView(false);
 }
 
+// 送信制御
 const submit = () => {
+    form.room_id = document.getElementById("roomId").value;
     form.post(route('chat.create'), {
-        preserveScroll: true,
-        onSuccess: () => form.reset()
-    })
+        onSuccess: () => {
+            form.reset();
+            scrollEnd();
+            preventScroll.value = window.scrollY;
+        }
+    });
 }
 </script>
 
@@ -54,7 +64,8 @@ const submit = () => {
 
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Chat</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">{{ room_info.name }}</h2>
+            <input type="hidden" :value="room_info.id" id="roomId">
         </template>
 
         <div class="py-12" id="chatScroll">

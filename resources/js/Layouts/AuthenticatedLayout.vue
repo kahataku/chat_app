@@ -8,18 +8,13 @@ import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
 
 const showingNavigationDropdown = ref(false);
-const navHeaderTop = ref();
-const headerTop = ref(0);
 
-onMounted(() => {
-    headerTop.value = navHeaderTop.value.offsetHeight + 'px';
-});
 </script>
 
 <template>
     <div>
         <div class="min-h-screen bg-gray-100">
-            <nav class="bg-white border-b border-gray-100 sticky top-0 z-10" ref="navHeaderTop">
+            <nav class="bg-white border-b border-gray-100 sticky top-0 z-10">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
@@ -37,6 +32,11 @@ onMounted(() => {
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
+                                </NavLink>
+                            </div>
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                <NavLink :href="route('room')" :active="route().current('room')">
+                                    Room
                                 </NavLink>
                             </div>
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
@@ -146,7 +146,7 @@ onMounted(() => {
                     </div>
                 </div>
                 <!-- Page Heading -->
-                <header class="bg-white shadow" :style="{top: headerTop}" v-if="$slots.header">
+                <header class="bg-white shadow">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         <slot name="header" />
                     </div>
