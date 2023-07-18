@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\RoomController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -29,6 +30,12 @@ use Inertia\Inertia;
 Route::get('/', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/room', [RoomController::class, 'index'])->name('room');
+Route::post('/room', [RoomController::class, 'createRoom'])->name('room.create');
+Route::put('/room', [RoomController::class, 'updateRoom'])->name('room.update');
+Route::delete('/room/{id}', [RoomController::class, 'deleteRoom'])->name('room.delete');
+Route::post('/room/join', [RoomController::class, 'joinRoom'])->name('room.join');
 
 Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 Route::post('/chat', [ChatController::class, 'create'])->name('chat.create');
