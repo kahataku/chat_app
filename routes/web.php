@@ -36,9 +36,11 @@ Route::post('/room', [RoomController::class, 'createRoom'])->name('room.create')
 Route::put('/room', [RoomController::class, 'updateRoom'])->name('room.update');
 Route::delete('/room/{id}', [RoomController::class, 'deleteRoom'])->name('room.delete');
 Route::post('/room/join', [RoomController::class, 'joinRoom'])->name('room.join');
+Route::delete('/room/withdraw/{id}', [RoomController::class, 'withdraw'])->name('room.withdraw');
 
 Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 Route::post('/chat', [ChatController::class, 'create'])->name('chat.create');
+Route::put('/chat/delete', [ChatController::class, 'deleteMessage'])->name('chat.delete');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

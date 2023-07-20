@@ -150,4 +150,23 @@ class RoomController extends Controller
 
         return to_route('room');
     }
+
+    /**
+     * チャットルーム退会処理
+     */
+    public function withdraw($id) {
+        // room_idが空の場合、処理を行わない
+        if (empty($id)) {
+            return to_route('room');
+        }
+
+        // participantsテーブルから削除
+        Participant::where([
+            ['room_id', '=', $id],
+            ['user_id', '=', Auth::id()]
+        ])
+        ->delete();
+
+        return to_route('room');
+    }
 }
