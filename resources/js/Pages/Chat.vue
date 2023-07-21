@@ -21,6 +21,8 @@ const formTextArea = ref();
 const toButtonHeight = ref(0);
 const preventScroll = ref(0)
 const toButtonShow = ref(false);
+const imageBasePath = "../../../../storage/app/";
+const noImage = "person.png"
 
 onMounted(() => {
     toButtonHeight.value = formTextArea.value.offsetHeight + 'px';
@@ -33,9 +35,14 @@ onMounted(() => {
 
 // リスナー（Pusher）
 window.Echo.channel('chat').listen('MessageControl', function(data) {
+    const room_id = document.getElementById("roomId").value;
     router.visit(route('chat'), {
+        data: {room_id: room_id},
         preserveState: true,
-        preserveScroll: true
+        onSuccess: () => {
+            scrollEnd();
+            preventScroll.value = window.scrollY;
+        }
     });
 });
 
@@ -142,8 +149,9 @@ const withdraw = () => {
                             </template>
 
                             <template #content>
-                                <div v-for="member in members" :key="member.id">
-                                    <p class="px-4 py-2 text-gray-700">{{ member.name }}</p>
+                                <div v-for="member in members" :key="member.id" class="flex">
+                                    <img :src="imageBasePath + (member.image == null ? noImage : member.image)" class="w-8 h-8 object-cover mx-4 my-2 rounded-full">
+                                    <p class="px-2 py-2 text-gray-700">{{ member.name }}</p>
                                 </div>
                                 <button v-if="room_info.created_user !== user_id" @click="withdraw" class="px-4 py-2 text-red-600 border-t border-solid border-slate-200 w-full text-sm">退会する</button>
                             </template>
@@ -165,8 +173,10 @@ const withdraw = () => {
                 <template v-else>
                     <div class="max-w-100 sm:px-6 lg:px-8 mb-4 flex" v-bind:class="{'flex-row-reverse' : message.user_id === user_id}">
                         <div class="relative">
-
-                            <p v-if="message.user_id !== user_id">{{ message.user_name }}</p>
+                            <div v-if="message.user_id !== user_id" class="flex mb-1">
+                                <img :src="imageBasePath + (message.user_image == null || message.user_name === 'unknown' ? noImage : message.user_image)" class="w-8 h-8 object-cover rounded-full mr-2 border">
+                                <p>{{ message.user_name }}</p>
+                            </div>
                             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                                 <template v-if="message.user_id === user_id">
                                     <div

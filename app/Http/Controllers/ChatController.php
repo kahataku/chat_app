@@ -34,6 +34,7 @@ class ChatController extends Controller
                     ELSE users.name
                 END AS user_name"
             ),
+            'users.image as user_image',
             'messages.id',
             'messages.contents',
             'messages.is_delete',
@@ -56,7 +57,8 @@ class ChatController extends Controller
         // チャットのメンバーを取得
         $members = Participant::select(
             'users.id',
-            'users.name'
+            'users.name',
+            'users.image'
         )
         ->join('users', 'participants.user_id', '=', 'users.id')
         ->where('participants.room_id', $roomId)
